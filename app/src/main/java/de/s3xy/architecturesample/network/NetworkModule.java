@@ -1,5 +1,8 @@
 package de.s3xy.architecturesample.network;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -22,6 +25,15 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 @Module
 public class NetworkModule {
     static final String TWITTER_API_ENDPOINT = "TwitterApiEndpoint";
+
+    @Provides
+    @ApplicationScope
+    ObjectMapper provideJacksonObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
+
 
     @Provides
     @ApplicationScope
@@ -55,11 +67,11 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    Retrofit provideRetrofit(@Named(TWITTER_API_ENDPOINT) String endpoint, OkHttpClient okHttpClient) {
+    Retrofit provideRetrofit(@Named(TWITTER_API_ENDPOINT) String endpoint, OkHttpClient okHttpClient, ObjectMapper mapper) {
         return new Retrofit.Builder()
                 .baseUrl(endpoint)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(JacksonConverterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
                 .client(okHttpClient).build();
     }
 
@@ -70,4 +82,10 @@ public class NetworkModule {
     }
 
 
+    @Provides
+    @ApplicationScope
+    @Named(TWITTER_API_ENDPOINT)
+    String provideTwitterEndpoint() {
+        return "https://api.twitter.com/1.1/";
+    }
 }
