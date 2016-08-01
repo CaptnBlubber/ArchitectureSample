@@ -5,10 +5,16 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+        classpath 'com.android.tools.build:gradle:2.1.2'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        //Alpha Not Stable yet
+        //classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+
+        //Required for AnnotationProcessing Since Jack is not Stable enough yet
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+
+        //Requried for Lambda Expressions
+        classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
     }
 }
 
