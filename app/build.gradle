@@ -4,6 +4,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 //Make sure to apply Retrolambda last
 apply plugin: 'me.tatarka.retrolambda'
 
+apply from: 'twitter_config.gradle'
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
@@ -46,6 +48,9 @@ dependencies {
     //OkHTTP
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile "com.squareup.okhttp3:logging-interceptor:3.4.1"
+
+    //Used for Handling oauth Requests
+    compile 'se.akerfeldt:okhttp-signpost:1.1.0'
 
     //RxAndroid
     compile 'io.reactivex:rxjava:1.1.8'

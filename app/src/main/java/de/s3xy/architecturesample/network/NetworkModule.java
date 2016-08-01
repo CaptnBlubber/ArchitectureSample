@@ -12,6 +12,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
+import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -20,6 +22,14 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Module
 public class NetworkModule {
     static final String TWITTER_API_ENDPOINT = "TwitterApiEndpoint";
+
+    @Provides
+    @ApplicationScope
+    SigningInterceptor provideSigningInterceptor() {
+        OkHttpOAuthConsumer oAuthConsumer = new OkHttpOAuthConsumer(BuildConfig.TWITTER_CONSUMER_KEY, BuildConfig.TWITTER_CONSUMER_SECRET);
+        oAuthConsumer.setTokenWithSecret(BuildConfig.TWITTER_OAUTH_TOKEN, BuildConfig.TWITTER_OAUTH_SECRET);
+        return new SigningInterceptor(oAuthConsumer);
+    }
 
     @Provides
     @ApplicationScope
@@ -35,9 +45,10 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor) {
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor, SigningInterceptor signingInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .addInterceptor(signingInterceptor)
                 .retryOnConnectionFailure(true)
                 .build();
     }
