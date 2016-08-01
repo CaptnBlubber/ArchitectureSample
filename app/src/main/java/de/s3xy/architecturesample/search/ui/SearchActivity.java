@@ -8,11 +8,6 @@ import javax.inject.Inject;
 
 import de.s3xy.architecturesample.AwesomeApplication;
 import de.s3xy.architecturesample.twitter.api.TwitterApi;
-import de.s3xy.architecturesample.twitter.model.SearchResult;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -34,20 +29,5 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        mTwitterApi
-                .searchTweets("awesome")
-                .map(SearchResult::getStatuses)
-                .flatMap(Observable::from)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        tweet -> {
-                            Timber.d(tweet.getText());
-                        },
-                        throwable -> {
-                            Timber.e(throwable.getMessage());
-                        }
-                );
     }
 }
