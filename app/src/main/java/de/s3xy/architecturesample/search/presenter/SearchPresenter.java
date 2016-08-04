@@ -33,7 +33,6 @@ public class SearchPresenter implements Presenter<SearchTweetsView> {
     @Override
     public void attachView(SearchTweetsView view) {
         mView = view;
-
         setupSearchListener();
     }
 

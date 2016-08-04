@@ -3,7 +3,6 @@ package de.s3xy.architecturesample.search.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
@@ -20,7 +19,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.s3xy.architecturesample.AwesomeApplication;
 import de.s3xy.architecturesample.R;
-import de.s3xy.architecturesample.search.adapter.TweetAdapter;
 import de.s3xy.architecturesample.search.presenter.SearchPresenter;
 import de.s3xy.architecturesample.twitter.model.Tweet;
 import rx.Observable;
@@ -45,7 +43,6 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
     ProgressBar mLoading;
 
     private Unbinder mUnbinder;
-    private TweetAdapter mTweetAdapter;
 
 
     @Override
@@ -54,11 +51,6 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         mUnbinder = ButterKnife.bind(this);
-
-        mTweetAdapter = new TweetAdapter();
-
-        mListTweets.setLayoutManager(new LinearLayoutManager(this));
-        mListTweets.setAdapter(mTweetAdapter);
 
         mSearchPresenter.attachView(this);
     }
@@ -77,7 +69,7 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
 
     @Override
     public void showTweets(List<Tweet> tweets) {
-        mTweetAdapter.setTweets(tweets);
+        //TODO Show Tweets
     }
 
     @Override
