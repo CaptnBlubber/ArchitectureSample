@@ -2,7 +2,7 @@ package de.s3xy.architecturesample.search.ui;
 
 import java.util.List;
 
-import de.s3xy.architecturesample.twitter.model.Tweet;
+import de.s3xy.architecturesample.github.model.Repository;
 import rx.Observable;
 
 /**
@@ -10,8 +10,8 @@ import rx.Observable;
  */
 
 
-public interface SearchTweetsView {
-    void showTweets(List<Tweet> tweets);
+public interface SearchRepositoriesView {
+    void showRepositories(List<Repository> repositories);
 
     void showLoading();
 

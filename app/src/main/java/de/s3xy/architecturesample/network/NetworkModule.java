@@ -9,14 +9,12 @@ import dagger.Module;
 import dagger.Provides;
 import de.s3xy.architecturesample.BuildConfig;
 import de.s3xy.architecturesample.di.scope.ApplicationScope;
-import de.s3xy.architecturesample.twitter.api.TwitterApi;
+import de.s3xy.architecturesample.github.GithubApi;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
-import se.akerfeldt.okhttp.signpost.OkHttpOAuthConsumer;
-import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -24,7 +22,7 @@ import se.akerfeldt.okhttp.signpost.SigningInterceptor;
 
 @Module
 public class NetworkModule {
-    static final String TWITTER_API_ENDPOINT = "TwitterApiEndpoint";
+    static final String GITHUB_API_ENDPOINT = "GithubApiEndpoint";
 
     @Provides
     @ApplicationScope
@@ -32,15 +30,6 @@ public class NetworkModule {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return objectMapper;
-    }
-
-
-    @Provides
-    @ApplicationScope
-    SigningInterceptor provideSigningInterceptor() {
-        OkHttpOAuthConsumer oAuthConsumer = new OkHttpOAuthConsumer(BuildConfig.TWITTER_CONSUMER_KEY, BuildConfig.TWITTER_CONSUMER_SECRET);
-        oAuthConsumer.setTokenWithSecret(BuildConfig.TWITTER_OAUTH_TOKEN, BuildConfig.TWITTER_OAUTH_SECRET);
-        return new SigningInterceptor(oAuthConsumer);
     }
 
     @Provides
@@ -57,17 +46,16 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor, SigningInterceptor signingInterceptor) {
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
-                .addInterceptor(signingInterceptor)
                 .retryOnConnectionFailure(true)
                 .build();
     }
 
     @Provides
     @ApplicationScope
-    Retrofit provideRetrofit(@Named(TWITTER_API_ENDPOINT) String endpoint, OkHttpClient okHttpClient, ObjectMapper mapper) {
+    Retrofit provideRetrofit(@Named(GITHUB_API_ENDPOINT) String endpoint, OkHttpClient okHttpClient, ObjectMapper mapper) {
         return new Retrofit.Builder()
                 .baseUrl(endpoint)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -77,15 +65,15 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    TwitterApi provideTwitterApi(Retrofit retrofit) {
-        return retrofit.create(TwitterApi.class);
+    GithubApi provideGithubApi(Retrofit retrofit) {
+        return retrofit.create(GithubApi.class);
     }
 
 
     @Provides
     @ApplicationScope
-    @Named(TWITTER_API_ENDPOINT)
-    String provideTwitterEndpoint() {
-        return "https://api.twitter.com/1.1/";
+    @Named(GITHUB_API_ENDPOINT)
+    String provideGithubEndpoint() {
+        return "https://api.github.com/";
     }
 }

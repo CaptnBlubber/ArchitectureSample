@@ -5,9 +5,9 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import de.s3xy.architecturesample.base.Presenter;
-import de.s3xy.architecturesample.search.ui.SearchTweetsView;
-import de.s3xy.architecturesample.twitter.api.TwitterApi;
-import de.s3xy.architecturesample.twitter.model.SearchResult;
+import de.s3xy.architecturesample.github.GithubApi;
+import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
+import de.s3xy.architecturesample.search.ui.SearchRepositoriesView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -18,20 +18,20 @@ import rx.subscriptions.Subscriptions;
  */
 
 
-public class SearchPresenter implements Presenter<SearchTweetsView> {
+public class SearchPresenter implements Presenter<SearchRepositoriesView> {
 
     private Subscription mSubscription = Subscriptions.empty();
-    private SearchTweetsView mView;
+    private SearchRepositoriesView mView;
 
-    private final TwitterApi mTwitterApi;
+    private final GithubApi mGithubApi;
 
     @Inject
-    SearchPresenter(TwitterApi twitterApi) {
-        mTwitterApi = twitterApi;
+    SearchPresenter(GithubApi githubApi) {
+        mGithubApi = githubApi;
     }
 
     @Override
-    public void attachView(SearchTweetsView view) {
+    public void attachView(SearchRepositoriesView view) {
         mView = view;
 
         setupSearchListener();
@@ -51,12 +51,12 @@ public class SearchPresenter implements Presenter<SearchTweetsView> {
                 .filter(charSequence -> charSequence.length() > 5)
                 .map(CharSequence::toString)
                 .subscribeOn(Schedulers.io())
-                .concatMap(mTwitterApi::searchTweets)
-                .map(SearchResult::getStatuses)
+                .concatMap(mGithubApi::searchRepositories)
+                .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tweets -> {
+                .subscribe(repositories -> {
                     mView.hideLoading();
-                    mView.showTweets(tweets);
+                    mView.showRepositories(repositories);
                 });
     }
 }

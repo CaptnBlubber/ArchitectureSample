@@ -20,9 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.s3xy.architecturesample.AwesomeApplication;
 import de.s3xy.architecturesample.R;
-import de.s3xy.architecturesample.search.adapter.TweetAdapter;
+import de.s3xy.architecturesample.github.model.Repository;
+import de.s3xy.architecturesample.search.adapter.RepositoryAdapter;
 import de.s3xy.architecturesample.search.presenter.SearchPresenter;
-import de.s3xy.architecturesample.twitter.model.Tweet;
 import rx.Observable;
 
 /**
@@ -30,7 +30,7 @@ import rx.Observable;
  */
 
 
-public class SearchTweetsActivity extends AppCompatActivity implements SearchTweetsView {
+public class SearchRepositoriesActivity extends AppCompatActivity implements SearchRepositoriesView {
 
     @Inject
     SearchPresenter mSearchPresenter;
@@ -45,7 +45,7 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
     ProgressBar mLoading;
 
     private Unbinder mUnbinder;
-    private TweetAdapter mTweetAdapter;
+    private RepositoryAdapter mRepositoryAdapter;
 
 
     @Override
@@ -55,10 +55,10 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
         setContentView(R.layout.activity_search);
         mUnbinder = ButterKnife.bind(this);
 
-        mTweetAdapter = new TweetAdapter();
+        mRepositoryAdapter = new RepositoryAdapter();
 
         mListTweets.setLayoutManager(new LinearLayoutManager(this));
-        mListTweets.setAdapter(mTweetAdapter);
+        mListTweets.setAdapter(mRepositoryAdapter);
 
         mSearchPresenter.attachView(this);
     }
@@ -76,8 +76,8 @@ public class SearchTweetsActivity extends AppCompatActivity implements SearchTwe
     }
 
     @Override
-    public void showTweets(List<Tweet> tweets) {
-        mTweetAdapter.setTweets(tweets);
+    public void showRepositories(List<Repository> repositories) {
+        mRepositoryAdapter.setRepositories(repositories);
     }
 
     @Override
