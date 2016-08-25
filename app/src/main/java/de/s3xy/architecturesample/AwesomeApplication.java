@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import de.s3xy.architecturesample.di.ApplicationModule;
 import de.s3xy.architecturesample.di.component.ApplicationComponent;
 import de.s3xy.architecturesample.di.component.DaggerApplicationComponent;
+import de.s3xy.architecturesample.network.NetworkModule;
 import timber.log.Timber;
 
 /**
@@ -32,6 +34,8 @@ public class AwesomeApplication extends Application {
 
     private void initDagger() {
         mApplicationComponent = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule(this))
+                .networkModule(new NetworkModule())
                 .build();
     }
 

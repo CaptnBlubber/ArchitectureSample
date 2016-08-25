@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubAuthHelper;
+import de.s3xy.architecturesample.github.GithubAuthManager;
 import de.s3xy.architecturesample.login.ui.LoginView;
 
 /**
@@ -12,15 +13,21 @@ import de.s3xy.architecturesample.login.ui.LoginView;
  */
 public class LoginPresenter implements Presenter<LoginView> {
     private LoginView mView;
+    private GithubAuthManager mAuthManager;
 
     @Inject
-    LoginPresenter() {}
+    LoginPresenter(GithubAuthManager authManager) {
+        mAuthManager = authManager;
+    }
 
     @Override
     public void attachView(LoginView view) {
         mView = view;
 
-        // TODO check if we already have token or we should be unauthorized. If true - call goToSearchScreen()
+        if (mAuthManager.shouldBeUnauthorized() || mAuthManager.getAccessToken() != null) {
+            // We already have token or we should be unauthorized so go to search screen
+            mView.goToSearchScreen();
+        }
     }
 
     @Override
@@ -37,6 +44,7 @@ public class LoginPresenter implements Presenter<LoginView> {
     }
 
     public void skipLogin() {
-        // TODO write to prefs that we should be unathorized
+        mAuthManager.setShouldBeUnauthorized(true);
+        mView.goToSearchScreen();
     }
 }
