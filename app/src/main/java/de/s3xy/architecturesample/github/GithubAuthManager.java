@@ -1,6 +1,7 @@
 package de.s3xy.architecturesample.github;
 
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ public class GithubAuthManager {
         mPrefs.edit().putBoolean(KEY_SHOULD_BE_UNAUTHORIZED, b).apply();
     }
 
+    @Nullable
     public String getAccessToken() {
         return mPrefs.getString(KEY_ACCESS_TOKEN, null);
     }

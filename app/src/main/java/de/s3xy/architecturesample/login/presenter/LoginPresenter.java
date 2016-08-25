@@ -54,9 +54,11 @@ public class LoginPresenter implements Presenter<LoginView> {
                 .subscribe(
                         accessToken -> {
                             Timber.d("Access token = " + accessToken.getAccessToken());
+                            mAuthManager.saveAccessToken(accessToken.getAccessToken());
+                            mView.goToSearchScreen();
                         },
                         Throwable::printStackTrace,
-                        () -> Timber.d("Getting fetching access token completed"));
+                        () -> Timber.d("Fetching access token completed"));
     }
 
     public void skipLogin() {

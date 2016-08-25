@@ -10,6 +10,8 @@ import dagger.Provides;
 import de.s3xy.architecturesample.BuildConfig;
 import de.s3xy.architecturesample.di.scope.ApplicationScope;
 import de.s3xy.architecturesample.github.GithubApi;
+import de.s3xy.architecturesample.github.GithubAuthManager;
+import de.s3xy.architecturesample.github.TokenInterceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -48,8 +50,15 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
-    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor) {
+    TokenInterceptor provideTokenInterceptor(GithubAuthManager authManager) {
+        return new TokenInterceptor(authManager);
+    }
+
+    @Provides
+    @ApplicationScope
+    OkHttpClient provideOkHttpClient(HttpLoggingInterceptor loggingInterceptor, TokenInterceptor tokenInterceptor) {
         return new OkHttpClient.Builder()
+                .addInterceptor(tokenInterceptor)
                 .addInterceptor(loggingInterceptor)
                 .retryOnConnectionFailure(true)
                 .build();

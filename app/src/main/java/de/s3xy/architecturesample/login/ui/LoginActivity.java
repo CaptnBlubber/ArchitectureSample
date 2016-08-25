@@ -1,10 +1,14 @@
 package de.s3xy.architecturesample.login.ui;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -76,10 +80,21 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 hideLoading();
             }
 
+            @TargetApi(Build.VERSION_CODES.N)
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                final Uri uri = request.getUrl();
+                return handleUri(uri);
+            }
+
+            @SuppressWarnings("deprecation")
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Uri uri = Uri.parse(url);
+                final Uri uri = Uri.parse(url);
+                return handleUri(uri);
+            }
 
+            private boolean handleUri(@NonNull final Uri uri) {
                 if (uri.getScheme().equals(GithubAuthHelper.CALLBACK_SCHEME)) {
                     String code = uri.getQueryParameter("code");
 
@@ -88,9 +103,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
                     }
 
                     return true;
+                } else {
+                    return false;
                 }
-
-                return super.shouldOverrideUrlLoading(view, url);
             }
         });
     }
