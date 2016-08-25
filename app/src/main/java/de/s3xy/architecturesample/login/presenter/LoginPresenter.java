@@ -6,6 +6,7 @@ import javax.inject.Named;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubApi;
 import de.s3xy.architecturesample.github.GithubAuthHelper;
+import de.s3xy.architecturesample.github.GithubAuthManager;
 import de.s3xy.architecturesample.login.ui.LoginView;
 import de.s3xy.architecturesample.network.NetworkModule;
 import rx.android.schedulers.AndroidSchedulers;
@@ -19,17 +20,22 @@ import timber.log.Timber;
 public class LoginPresenter implements Presenter<LoginView> {
     private LoginView mView;
     private GithubApi mGithubApi;
+    private GithubAuthManager mAuthManager;
 
     @Inject
-    LoginPresenter(@Named(NetworkModule.AUTH_FLOW) GithubApi githubApi) {
+    LoginPresenter(@Named(NetworkModule.AUTH_FLOW) GithubApi githubApi, GithubAuthManager authManager) {
         mGithubApi = githubApi;
+        mAuthManager = authManager;
     }
 
     @Override
     public void attachView(LoginView view) {
         mView = view;
 
-        // TODO check if we already have token or we should be unauthorized. If true - call goToSearchScreen()
+        if (mAuthManager.shouldBeUnauthorized() || mAuthManager.getAccessToken() != null) {
+            // We already have token or we should be unauthorized so go to search screen
+            mView.goToSearchScreen();
+        }
     }
 
     @Override
@@ -54,6 +60,7 @@ public class LoginPresenter implements Presenter<LoginView> {
     }
 
     public void skipLogin() {
-        // TODO write to prefs that we should be unauthorized
+        mAuthManager.setShouldBeUnauthorized(true);
+        mView.goToSearchScreen();
     }
 }
