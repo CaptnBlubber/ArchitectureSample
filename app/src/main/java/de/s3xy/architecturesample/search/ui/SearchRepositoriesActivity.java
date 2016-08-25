@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -65,6 +69,37 @@ public class SearchRepositoriesActivity extends BaseActivity implements SearchRe
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_menu, menu);
+
+        if (mSearchPresenter.shouldShowSignIn()) {
+            MenuItem logoutItem = menu.findItem(R.id.logout);
+            logoutItem.setVisible(false);
+        } else {
+            MenuItem signInItem = menu.findItem(R.id.signin);
+            signInItem.setVisible(false);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mSearchPresenter.logout();
+                return true;
+            case R.id.signin:
+                //TODO: Implement onSignInClick asap!
+                Toast.makeText(this, "TODO: Implement onSignInClick later!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected Unbinder getUnbinder() {
         return mUnbinder;
     }
@@ -92,5 +127,10 @@ public class SearchRepositoriesActivity extends BaseActivity implements SearchRe
     @Override
     public Observable<CharSequence> getQueryTextObservable() {
         return RxTextView.textChanges(mTxtSearchQuery);
+    }
+
+    @Override
+    public void recreateMenu() {
+        invalidateOptionsMenu();
     }
 }

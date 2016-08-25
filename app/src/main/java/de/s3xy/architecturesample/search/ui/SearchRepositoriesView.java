@@ -15,4 +15,6 @@ public interface SearchRepositoriesView extends BaseNetworkView {
     void showRepositories(List<Repository> repositories);
 
     Observable<CharSequence> getQueryTextObservable();
+
+    void recreateMenu();
 }

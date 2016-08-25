@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubApi;
+import de.s3xy.architecturesample.github.GithubAuthManager;
 import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
 import de.s3xy.architecturesample.search.ui.SearchRepositoriesView;
 import rx.Subscription;
@@ -24,10 +25,12 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     private SearchRepositoriesView mView;
 
     private final GithubApi mGithubApi;
+    private final GithubAuthManager mGithubAuthManager;
 
     @Inject
-    SearchPresenter(GithubApi githubApi) {
+    SearchPresenter(GithubApi githubApi, GithubAuthManager githubAuthManager) {
         mGithubApi = githubApi;
+        mGithubAuthManager = githubAuthManager;
     }
 
     @Override
@@ -59,5 +62,15 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
                     mView.hideLoading();
                     mView.showRepositories(repositories);
                 });
+    }
+
+    public boolean shouldShowSignIn() {
+        return mGithubAuthManager.shouldBeUnauthorized();
+    }
+
+    public void logout() {
+        mGithubAuthManager.resetAuthentication();
+        mGithubAuthManager.setShouldBeUnauthorized(true);
+        mView.recreateMenu();
     }
 }

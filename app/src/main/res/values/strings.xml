@@ -15,4 +15,7 @@
     <string name="working">Working...</string>
     <string name="wait">Wait a moment</string>
     <string name="skip">Skip Sign in</string>
+
+    <string name="menu_sign_title">Sign</string>
+    <string name="menu_logout_title">Logout</string>
 </resources>

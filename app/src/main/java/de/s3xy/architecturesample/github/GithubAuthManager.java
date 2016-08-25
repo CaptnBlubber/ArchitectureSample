@@ -20,6 +20,10 @@ public class GithubAuthManager {
         mPrefs = prefs;
     }
 
+    public void resetAuthentication() {
+        mPrefs.edit().clear().apply();
+    }
+
     public boolean shouldBeUnauthorized() {
         return mPrefs.getBoolean(KEY_SHOULD_BE_UNAUTHORIZED, false);
     }
