@@ -2,7 +2,6 @@ package de.s3xy.architecturesample.search.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,6 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.s3xy.architecturesample.AwesomeApplication;
 import de.s3xy.architecturesample.R;
+import de.s3xy.architecturesample.base.BaseActivity;
+import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.model.Repository;
 import de.s3xy.architecturesample.search.adapter.RepositoryAdapter;
 import de.s3xy.architecturesample.search.presenter.SearchPresenter;
@@ -30,7 +31,7 @@ import rx.Observable;
  */
 
 
-public class SearchRepositoriesActivity extends AppCompatActivity implements SearchRepositoriesView {
+public class SearchRepositoriesActivity extends BaseActivity implements SearchRepositoriesView {
 
     @Inject
     SearchPresenter mSearchPresenter;
@@ -64,15 +65,13 @@ public class SearchRepositoriesActivity extends AppCompatActivity implements Sea
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSearchPresenter.dettachView();
-        mUnbinder.unbind();
+    protected Unbinder getUnbinder() {
+        return mUnbinder;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected Presenter getPresenter() {
+        return mSearchPresenter;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     }
 
     @Override
-    public void dettachView() {
+    public void detachView() {
         mSubscription.unsubscribe();
     }
 
