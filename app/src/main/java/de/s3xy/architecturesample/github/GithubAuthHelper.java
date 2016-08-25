@@ -13,8 +13,8 @@ public class GithubAuthHelper {
 
     private static final String OAUTH_HOST = "github.com";
     private static final String SCOPE = "user,public_repo,repo";
-    private static final String CLIENT_ID = "da301df0a062c04367ce";
-    private static final String CLIENT_SECRET = "167e837f8826566bd200edba1b5139cfdaa77e0f";
+    public static final String CLIENT_ID = "da301df0a062c04367ce";
+    public static final String CLIENT_SECRET = "167e837f8826566bd200edba1b5139cfdaa77e0f";
 
     public static String buildAuthUrl() {
         HttpUrl.Builder url = new HttpUrl.Builder()

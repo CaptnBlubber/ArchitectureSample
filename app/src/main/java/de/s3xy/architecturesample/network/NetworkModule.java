@@ -22,7 +22,9 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Module
 public class NetworkModule {
-    static final String GITHUB_API_ENDPOINT = "GithubApiEndpoint";
+    private static final String GITHUB_API_ENDPOINT = "GithubApiEndpoint";
+
+    public static final String AUTH_FLOW = "GithubAuthFlow";
 
     @Provides
     @ApplicationScope
@@ -65,15 +67,39 @@ public class NetworkModule {
 
     @Provides
     @ApplicationScope
+    @Named(AUTH_FLOW)
+    Retrofit provideAuthRetrofit(@Named(AUTH_FLOW) String endpoint, OkHttpClient okHttpClient, ObjectMapper mapper) {
+        return new Retrofit.Builder()
+                .baseUrl(endpoint)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .client(okHttpClient).build();
+    }
+
+    @Provides
+    @ApplicationScope
     GithubApi provideGithubApi(Retrofit retrofit) {
         return retrofit.create(GithubApi.class);
     }
 
+    @Provides
+    @ApplicationScope
+    @Named(AUTH_FLOW)
+    GithubApi providesGithubAuthApi(@Named(AUTH_FLOW) Retrofit retrofit) {
+        return retrofit.create(GithubApi.class);
+    }
 
     @Provides
     @ApplicationScope
     @Named(GITHUB_API_ENDPOINT)
     String provideGithubEndpoint() {
         return "https://api.github.com/";
+    }
+
+    @Provides
+    @ApplicationScope
+    @Named(AUTH_FLOW)
+    String provideGithubAuthEndpoint() {
+        return "https://github.com/login/oauth/";
     }
 }

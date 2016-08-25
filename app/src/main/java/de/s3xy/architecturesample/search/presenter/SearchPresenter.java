@@ -43,14 +43,15 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     }
 
     public void setupSearchListener() {
-        mView.showLoading();
         mSubscription = mView
                 .getQueryTextObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(charSequence -> charSequence.length() > 5)
                 .map(CharSequence::toString)
-                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(s -> mView.showLoading())
+                .observeOn(Schedulers.io())
                 .concatMap(mGithubApi::searchRepositories)
                 .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
