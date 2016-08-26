@@ -1,6 +1,5 @@
 package de.s3xy.architecturesample.di;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -18,8 +17,8 @@ public class ApplicationModule {
 
     private final Context mAppContext;
 
-    public ApplicationModule(Application application) {
-        mAppContext = application.getApplicationContext();
+    public ApplicationModule(Context context) {
+        mAppContext = context;
     }
 
     @Provides

@@ -35,11 +35,8 @@ public class GithubInteractor {
     }
 
     public Observable<Boolean> getAccessToken(String code) {
-        if (!mNetworkConnectivityManager.isOnline()) {
-            return throwNoNetworkError();
-        }
-
-        return mGithubAuthApi.getAccessToken(GithubAuthHelper.CLIENT_ID, GithubAuthHelper.CLIENT_SECRET, code)
+        return checkIsOnline()
+                .flatMap(booleanObservable -> mGithubAuthApi.getAccessToken(GithubConfig.CLIENT_ID, GithubConfig.CLIENT_SECRET, code)
                 .map(accessToken -> {
                     if (accessToken.getAccessToken() != null) {
                         mGithubAuthManager.saveAccessToken(accessToken.getAccessToken());
@@ -47,15 +44,12 @@ public class GithubInteractor {
                     } else {
                         return false;
                     }
-                });
+                }));
     }
 
     public Observable<RepositoriesSearchResult> searchRepositories(String query) {
-        if (!mNetworkConnectivityManager.isOnline()) {
-            return throwNoNetworkError();
-        }
-
-        return mGithubApi.searchRepositories(query);
+        return checkIsOnline()
+                .flatMap(booleanObservable -> mGithubApi.searchRepositories(query));
     }
 
     public void skipLogin() {
@@ -75,7 +69,15 @@ public class GithubInteractor {
         mGithubAuthManager.setShouldBeUnauthorized(true);
     }
 
-    private <T> Observable<T> throwNoNetworkError() {
-        return Observable.create(subscriber -> subscriber.onError(new NoNetworkException()));
+    private Observable<Boolean> checkIsOnline() {
+        return Observable.create(subscriber -> {
+            if (!subscriber.isUnsubscribed()) {
+                if (mNetworkConnectivityManager.isOnline()) {
+                    subscriber.onNext(true);
+                } else {
+                    subscriber.onError(new NoNetworkException());
+                }
+            }
+        });
     }
 }

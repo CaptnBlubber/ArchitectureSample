@@ -34,7 +34,7 @@ public class AwesomeApplication extends Application {
 
     private void initDagger() {
         mApplicationComponent = DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this))
+                .applicationModule(new ApplicationModule(getApplicationContext()))
                 .networkModule(new NetworkModule())
                 .build();
     }
