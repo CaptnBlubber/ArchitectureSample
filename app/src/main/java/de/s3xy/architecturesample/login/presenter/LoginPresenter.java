@@ -2,6 +2,7 @@ package de.s3xy.architecturesample.login.presenter;
 
 import javax.inject.Inject;
 
+import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubAuthHelper;
 import de.s3xy.architecturesample.github.GithubInteractor;
@@ -50,11 +51,11 @@ public class LoginPresenter implements Presenter<LoginView> {
                             if (isLoggedIn) {
                                 mView.goToSearchScreen();
                             } else {
-                                // TODO show error
+                                mView.showError(ErrorType.AUTHORIZATION_FAILED);
                             }
                         }, throwable -> {
                             Timber.e(throwable, "Sign in error");
-                            /*TODO Show error */
+                            mView.showError(ErrorType.getErrorType(throwable));
                         },
                         () -> Timber.i("Signed in successful"));
     }

@@ -11,9 +11,6 @@ import javax.inject.Inject;
  * 08.26.2016
  */
 public class NetworkConnectivityManager {
-    public class NoNetworkException extends Throwable {
-    }
-
     private Context mContext;
 
     @Inject

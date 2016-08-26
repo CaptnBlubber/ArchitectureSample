@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubInteractor;
 import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
@@ -63,7 +64,7 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
                         throwable -> {
                             mView.hideLoading();
                             Timber.e(throwable, "Repositories fetching error");
-                            //TODO show error
+                            mView.showError(ErrorType.getErrorType(throwable));
                         },
                         () -> Timber.i("Repositories fetching complete"));
     }

@@ -4,18 +4,17 @@
 
     <!-- Strings related to login -->
     <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
-    <string name="error_invalid_email_format">Email doesn\'t look like email</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_authorization_failed">Authorization failed. Please try again</string>
+    <string name="error_access_forbidden">HTTP 403 Forbidden\nMaybe you reached a limit of requests. Please sing in!</string>
+    <string name="error_unauthorized">HTTP 401 Unauthorized\nMaybe you revoked access token. Please relogin!</string>
+    <string name="error_unknown_host">Unknown host\nMaybe internet connection lost</string>
     <string name="error_title">Error</string>
-    <string name="working">Working...</string>
+    <string name="working">Working…</string>
     <string name="wait">Wait a moment</string>
     <string name="skip">Skip Sign in</string>
 
     <string name="menu_sign_title">Sign in</string>
     <string name="menu_logout_title">Logout</string>
+    <string name="error_no_network">No network. Please, check your internet connection.</string>
 </resources>

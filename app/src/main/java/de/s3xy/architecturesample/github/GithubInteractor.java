@@ -6,6 +6,7 @@ import javax.inject.Named;
 import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
 import de.s3xy.architecturesample.network.NetworkConnectivityManager;
 import de.s3xy.architecturesample.network.NetworkModule;
+import de.s3xy.architecturesample.network.NoNetworkException;
 import rx.Observable;
 
 /**
@@ -75,7 +76,6 @@ public class GithubInteractor {
     }
 
     private <T> Observable<T> throwNoNetworkError() {
-        // TODO Change
-        return Observable.create(subscriber -> subscriber.onError(new Throwable()));
+        return Observable.create(subscriber -> subscriber.onError(new NoNetworkException()));
     }
 }
