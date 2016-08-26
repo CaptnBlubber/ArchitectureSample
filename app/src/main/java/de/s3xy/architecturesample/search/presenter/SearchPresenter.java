@@ -73,4 +73,9 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
         mGithubAuthManager.setShouldBeUnauthorized(true);
         mView.recreateMenu();
     }
+
+    public void signIn() {
+        mGithubAuthManager.setShouldBeUnauthorized(false);
+        mView.goToLoginScreen();
+    }
 }

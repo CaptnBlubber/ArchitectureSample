@@ -1,5 +1,6 @@
 package de.s3xy.architecturesample.search.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 
@@ -26,6 +26,7 @@ import de.s3xy.architecturesample.R;
 import de.s3xy.architecturesample.base.BaseActivity;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.model.Repository;
+import de.s3xy.architecturesample.login.ui.LoginActivity;
 import de.s3xy.architecturesample.search.adapter.RepositoryAdapter;
 import de.s3xy.architecturesample.search.presenter.SearchPresenter;
 import rx.Observable;
@@ -91,8 +92,7 @@ public class SearchRepositoriesActivity extends BaseActivity implements SearchRe
                 mSearchPresenter.logout();
                 return true;
             case R.id.signin:
-                //TODO: Implement onSignInClick asap!
-                Toast.makeText(this, "TODO: Implement onSignInClick later!", Toast.LENGTH_SHORT).show();
+                mSearchPresenter.signIn();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -132,5 +132,11 @@ public class SearchRepositoriesActivity extends BaseActivity implements SearchRe
     @Override
     public void recreateMenu() {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void goToLoginScreen() {
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 }

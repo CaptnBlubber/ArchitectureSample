@@ -17,4 +17,6 @@ public interface SearchRepositoriesView extends BaseNetworkView {
     Observable<CharSequence> getQueryTextObservable();
 
     void recreateMenu();
+
+    void goToLoginScreen();
 }
