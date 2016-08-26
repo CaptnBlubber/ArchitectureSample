@@ -5,14 +5,14 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import de.s3xy.architecturesample.base.Presenter;
-import de.s3xy.architecturesample.github.GithubApi;
-import de.s3xy.architecturesample.github.GithubAuthManager;
+import de.s3xy.architecturesample.github.GithubInteractor;
 import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
 import de.s3xy.architecturesample.search.ui.SearchRepositoriesView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
+import timber.log.Timber;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -24,13 +24,11 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     private Subscription mSubscription = Subscriptions.empty();
     private SearchRepositoriesView mView;
 
-    private final GithubApi mGithubApi;
-    private final GithubAuthManager mGithubAuthManager;
+    private GithubInteractor mInteractor;
 
     @Inject
-    SearchPresenter(GithubApi githubApi, GithubAuthManager githubAuthManager) {
-        mGithubApi = githubApi;
-        mGithubAuthManager = githubAuthManager;
+    SearchPresenter(GithubInteractor interactor) {
+        mInteractor = interactor;
     }
 
     @Override
@@ -55,27 +53,32 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> mView.showLoading())
                 .observeOn(Schedulers.io())
-                .concatMap(mGithubApi::searchRepositories)
+                .concatMap(mInteractor::searchRepositories)
                 .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(repositories -> {
-                    mView.hideLoading();
-                    mView.showRepositories(repositories);
-                });
+                            mView.hideLoading();
+                            mView.showRepositories(repositories);
+                        },
+                        throwable -> {
+                            mView.hideLoading();
+                            Timber.e(throwable, "Repositories fetching error");
+                            //TODO show error
+                        },
+                        () -> Timber.i("Repositories fetching complete"));
     }
 
     public boolean shouldShowSignIn() {
-        return mGithubAuthManager.shouldBeUnauthorized();
+        return mInteractor.shouldBeUnauthorized();
     }
 
     public void logout() {
-        mGithubAuthManager.resetAuthentication();
-        mGithubAuthManager.setShouldBeUnauthorized(true);
+        mInteractor.logout();
         mView.recreateMenu();
     }
 
     public void signIn() {
-        mGithubAuthManager.setShouldBeUnauthorized(false);
+        mInteractor.setShouldBeUnauthorized(false);
         mView.goToLoginScreen();
     }
 }

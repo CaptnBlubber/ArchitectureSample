@@ -1,6 +1,7 @@
 package de.s3xy.architecturesample.di;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -15,23 +16,23 @@ import de.s3xy.architecturesample.di.scope.ApplicationScope;
 @Module
 public class ApplicationModule {
 
-    private final Application mApplication;
+    private final Context mAppContext;
 
     public ApplicationModule(Application application) {
-        mApplication = application;
+        mAppContext = application.getApplicationContext();
     }
 
     @Provides
     @ApplicationScope
-    Application provideApplication() {
-        return mApplication;
+    Context provideContext() {
+        return mAppContext;
     }
 
 
     @Provides
     @ApplicationScope
     SharedPreferences provideSharedPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(mApplication);
+        return PreferenceManager.getDefaultSharedPreferences(mAppContext);
     }
 
 }
