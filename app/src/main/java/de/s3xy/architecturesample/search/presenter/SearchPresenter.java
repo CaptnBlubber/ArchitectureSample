@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubApi;
 import de.s3xy.architecturesample.github.GithubAuthManager;
@@ -13,6 +14,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
+import timber.log.Timber;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -59,9 +61,14 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
                 .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(repositories -> {
-                    mView.hideLoading();
-                    mView.showRepositories(repositories);
-                });
+                            mView.hideLoading();
+                            mView.showRepositories(repositories);
+                        }, throwable -> {
+                            mView.hideLoading();
+                            throwable.printStackTrace();
+                            mView.showError(ErrorType.getErrorType(throwable));
+                        },
+                        () -> Timber.d("The search of repositories is completed!"));
     }
 
     public boolean shouldShowSignIn() {

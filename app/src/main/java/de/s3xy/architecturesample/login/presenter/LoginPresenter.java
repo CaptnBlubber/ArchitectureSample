@@ -3,6 +3,7 @@ package de.s3xy.architecturesample.login.presenter;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubApi;
 import de.s3xy.architecturesample.github.GithubAuthHelper;
@@ -53,11 +54,10 @@ public class LoginPresenter implements Presenter<LoginView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         accessToken -> {
-                            Timber.d("Access token = " + accessToken.getAccessToken());
                             mAuthManager.saveAccessToken(accessToken.getAccessToken());
                             mView.goToSearchScreen();
                         },
-                        Throwable::printStackTrace,
+                        throwable -> mView.showError(ErrorType.getErrorType(throwable)),
                         () -> Timber.d("Fetching access token completed"));
     }
 
