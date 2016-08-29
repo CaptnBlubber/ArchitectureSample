@@ -7,6 +7,8 @@ import android.support.multidex.MultiDex;
 import de.s3xy.architecturesample.di.ApplicationModule;
 import de.s3xy.architecturesample.di.component.ApplicationComponent;
 import de.s3xy.architecturesample.di.component.DaggerApplicationComponent;
+import de.s3xy.architecturesample.network.AuthComponent;
+import de.s3xy.architecturesample.network.NetworkAuthModule;
 import de.s3xy.architecturesample.network.NetworkModule;
 import timber.log.Timber;
 
@@ -18,6 +20,7 @@ import timber.log.Timber;
 public class AwesomeApplication extends Application {
 
     private ApplicationComponent mApplicationComponent;
+    private AuthComponent mAuthComponent;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -37,6 +40,7 @@ public class AwesomeApplication extends Application {
                 .applicationModule(new ApplicationModule(getApplicationContext()))
                 .networkModule(new NetworkModule())
                 .build();
+        mAuthComponent = mApplicationComponent.plus(new NetworkAuthModule());
     }
 
     private void initTimber() {
@@ -47,5 +51,9 @@ public class AwesomeApplication extends Application {
 
     public ApplicationComponent getApplicationComponent() {
         return mApplicationComponent;
+    }
+
+    public AuthComponent getAuthComponent() {
+        return mAuthComponent;
     }
 }

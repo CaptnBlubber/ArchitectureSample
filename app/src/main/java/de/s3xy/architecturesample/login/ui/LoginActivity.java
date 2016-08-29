@@ -40,7 +40,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ((AwesomeApplication) getApplication()).getApplicationComponent().inject(this);
+        ((AwesomeApplication) getApplication()).getAuthComponent().inject(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.GithubAuthHelper;
-import de.s3xy.architecturesample.github.GithubInteractor;
+import de.s3xy.architecturesample.github.GithubAuthInteractor;
 import de.s3xy.architecturesample.login.ui.LoginView;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -17,10 +17,10 @@ import timber.log.Timber;
  */
 public class LoginPresenter implements Presenter<LoginView> {
     private LoginView mView;
-    private GithubInteractor mInteractor;
+    final private GithubAuthInteractor mInteractor;
 
     @Inject
-    LoginPresenter(GithubInteractor interactor) {
+    public LoginPresenter(GithubAuthInteractor interactor) {
         mInteractor = interactor;
     }
 

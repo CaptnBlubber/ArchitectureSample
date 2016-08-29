@@ -13,7 +13,7 @@ buildscript {
         //Required for AnnotationProcessing Since Jack is not Stable enough yet
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
 
-        //Requried for Lambda Expressions
+        //Required for Lambda Expressions
         classpath 'me.tatarka:gradle-retrolambda:3.3.0-beta4'
     }
 }
