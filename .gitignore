@@ -55,4 +55,4 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 
 # GitHub client id and client secret
-GithubConfig.java
+app/credentials.gradle
