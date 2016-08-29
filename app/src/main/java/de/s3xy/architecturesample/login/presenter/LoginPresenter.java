@@ -40,7 +40,7 @@ public class LoginPresenter implements Presenter<LoginView> {
     }
 
     public void signIn() {
-        mView.showWebViewForLogin(GithubAuthHelper.buildAuthUrl());
+        mView.showWebViewForLogin(GithubAuthHelper.buildAuthUrl(mInteractor.getClientId()));
     }
 
     public void codeReady(String code) {

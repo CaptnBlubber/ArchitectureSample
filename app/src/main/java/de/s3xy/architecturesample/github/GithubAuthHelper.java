@@ -1,6 +1,5 @@
 package de.s3xy.architecturesample.github;
 
-import de.s3xy.architecturesample.BuildConfig;
 import okhttp3.HttpUrl;
 
 /**
@@ -15,14 +14,14 @@ public class GithubAuthHelper {
     private static final String OAUTH_HOST = "github.com";
     private static final String SCOPE = "user,public_repo,repo";
 
-    public static String buildAuthUrl() {
+    public static String buildAuthUrl(String clientId) {
         HttpUrl.Builder url = new HttpUrl.Builder()
                 .scheme("https")
                 .host(OAUTH_HOST)
                 .addPathSegment("login")
                 .addPathSegment("oauth")
                 .addPathSegment("authorize")
-                .addQueryParameter("client_id", BuildConfig.CLIENT_ID)
+                .addQueryParameter("client_id", clientId)
                 .addQueryParameter("scope", SCOPE)
                 .addQueryParameter("redirect_uri", CALLBACK_SCHEME + CALLBACK_URL);
 

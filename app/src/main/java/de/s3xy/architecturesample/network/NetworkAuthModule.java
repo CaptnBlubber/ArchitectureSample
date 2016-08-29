@@ -6,6 +6,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import de.s3xy.architecturesample.BuildConfig;
 import de.s3xy.architecturesample.di.scope.AuthScope;
 import de.s3xy.architecturesample.github.GithubApi;
 import okhttp3.OkHttpClient;
@@ -21,6 +22,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 public class NetworkAuthModule {
 
     public static final String AUTH_FLOW = "GithubAuthFlow";
+    public static final String CLIENT_ID = "clientId";
+    public static final String CLIENT_SECRET = "clientSecret";
 
     @Provides
     @AuthScope
@@ -55,5 +58,19 @@ public class NetworkAuthModule {
     @Named(AUTH_FLOW)
     String provideGithubAuthEndpoint() {
         return "https://github.com/login/oauth/";
+    }
+
+    @Provides
+    @AuthScope
+    @Named(CLIENT_ID)
+    String provideClientId() {
+        return BuildConfig.CLIENT_ID;
+    }
+
+    @Provides
+    @AuthScope
+    @Named(CLIENT_SECRET)
+    String provideClientSecret() {
+        return BuildConfig.CLIENT_SECRET;
     }
 }
