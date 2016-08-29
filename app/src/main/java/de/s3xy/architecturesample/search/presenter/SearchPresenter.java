@@ -4,14 +4,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import de.s3xy.architecturesample.base.ErrorType;
 import de.s3xy.architecturesample.base.Presenter;
-import de.s3xy.architecturesample.github.GithubApi;
+import de.s3xy.architecturesample.github.GithubInteractor;
 import de.s3xy.architecturesample.github.model.RepositoriesSearchResult;
 import de.s3xy.architecturesample.search.ui.SearchRepositoriesView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
+import timber.log.Timber;
 
 /**
  * @author Angelo Rüggeberg <s3xy4ngc@googlemail.com>
@@ -23,11 +25,11 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     private Subscription mSubscription = Subscriptions.empty();
     private SearchRepositoriesView mView;
 
-    private final GithubApi mGithubApi;
+    private GithubInteractor mInteractor;
 
     @Inject
-    SearchPresenter(GithubApi githubApi) {
-        mGithubApi = githubApi;
+    SearchPresenter(GithubInteractor interactor) {
+        mInteractor = interactor;
     }
 
     @Override
@@ -38,25 +40,46 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
     }
 
     @Override
-    public void dettachView() {
+    public void detachView() {
         mSubscription.unsubscribe();
     }
 
     public void setupSearchListener() {
-        mView.showLoading();
         mSubscription = mView
                 .getQueryTextObservable()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(charSequence -> charSequence.length() > 5)
                 .map(CharSequence::toString)
-                .subscribeOn(Schedulers.io())
-                .concatMap(mGithubApi::searchRepositories)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(s -> mView.showLoading())
+                .observeOn(Schedulers.io())
+                .flatMap(mInteractor::searchRepositories)
                 .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(repositories -> {
-                    mView.hideLoading();
-                    mView.showRepositories(repositories);
-                });
+                            mView.hideLoading();
+                            mView.showRepositories(repositories);
+                        },
+                        throwable -> {
+                            mView.hideLoading();
+                            Timber.e(throwable, "Repositories fetching error");
+                            mView.showError(ErrorType.getErrorType(throwable));
+                        },
+                        () -> Timber.i("Repositories fetching complete"));
+    }
+
+    public boolean shouldShowSignIn() {
+        return mInteractor.shouldBeUnauthorized();
+    }
+
+    public void logout() {
+        mInteractor.logout();
+        mView.recreateMenu();
+    }
+
+    public void signIn() {
+        mInteractor.setShouldBeUnauthorized(false);
+        mView.goToLoginScreen();
     }
 }

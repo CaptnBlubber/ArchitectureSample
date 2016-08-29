@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">Architecture Sample</string>
     <string name="search_hint">Search for something e.g. \'awesome\'</string>
+
+    <!-- Strings related to login -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_authorization_failed">Authorization failed. Please try again</string>
+    <string name="error_access_forbidden">HTTP 403 Forbidden\nMaybe you reached a limit of requests. Please sing in!</string>
+    <string name="error_unauthorized">HTTP 401 Unauthorized\nMaybe you revoked access token. Please relogin!</string>
+    <string name="error_unknown_host">Unknown host\nMaybe internet connection lost</string>
+    <string name="error_title">Error</string>
+    <string name="working">Working…</string>
+    <string name="wait">Wait a moment</string>
+    <string name="skip">Skip Sign in</string>
+
+    <string name="menu_sign_title">Sign in</string>
+    <string name="menu_logout_title">Logout</string>
+    <string name="error_no_network">No network. Please, check your internet connection.</string>
 </resources>

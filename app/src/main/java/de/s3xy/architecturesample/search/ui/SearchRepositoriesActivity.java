@@ -1,10 +1,13 @@
 package de.s3xy.architecturesample.search.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -20,7 +23,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import de.s3xy.architecturesample.AwesomeApplication;
 import de.s3xy.architecturesample.R;
+import de.s3xy.architecturesample.base.BaseActivity;
+import de.s3xy.architecturesample.base.Presenter;
 import de.s3xy.architecturesample.github.model.Repository;
+import de.s3xy.architecturesample.login.ui.LoginActivity;
 import de.s3xy.architecturesample.search.adapter.RepositoryAdapter;
 import de.s3xy.architecturesample.search.presenter.SearchPresenter;
 import rx.Observable;
@@ -30,7 +36,7 @@ import rx.Observable;
  */
 
 
-public class SearchRepositoriesActivity extends AppCompatActivity implements SearchRepositoriesView {
+public class SearchRepositoriesActivity extends BaseActivity implements SearchRepositoriesView {
 
     @Inject
     SearchPresenter mSearchPresenter;
@@ -64,15 +70,43 @@ public class SearchRepositoriesActivity extends AppCompatActivity implements Sea
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mSearchPresenter.dettachView();
-        mUnbinder.unbind();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_menu, menu);
+
+        if (mSearchPresenter.shouldShowSignIn()) {
+            MenuItem logoutItem = menu.findItem(R.id.logout);
+            logoutItem.setVisible(false);
+        } else {
+            MenuItem signInItem = menu.findItem(R.id.signin);
+            signInItem.setVisible(false);
+        }
+
+        return true;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mSearchPresenter.logout();
+                return true;
+            case R.id.signin:
+                mSearchPresenter.signIn();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected Unbinder getUnbinder() {
+        return mUnbinder;
+    }
+
+    @Override
+    protected Presenter getPresenter() {
+        return mSearchPresenter;
     }
 
     @Override
@@ -93,5 +127,16 @@ public class SearchRepositoriesActivity extends AppCompatActivity implements Sea
     @Override
     public Observable<CharSequence> getQueryTextObservable() {
         return RxTextView.textChanges(mTxtSearchQuery);
+    }
+
+    @Override
+    public void recreateMenu() {
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void goToLoginScreen() {
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 }

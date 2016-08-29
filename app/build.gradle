@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 //Make sure to apply Retrolambda last
 apply plugin: 'me.tatarka.retrolambda'
+apply from: 'credentials.gradle'
 
 android {
     compileSdkVersion 24
