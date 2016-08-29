@@ -54,7 +54,7 @@ public class SearchPresenter implements Presenter<SearchRepositoriesView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(s -> mView.showLoading())
                 .observeOn(Schedulers.io())
-                .concatMap(mInteractor::searchRepositories)
+                .flatMap(mInteractor::searchRepositories)
                 .map(RepositoriesSearchResult::getItems)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(repositories -> {
